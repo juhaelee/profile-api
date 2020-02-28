@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "micro": "^9.3.4",
+    "@now/node": "^1.4.1",
     "node-fetch": "^2.6.0"
   },
   "main": "index.js",

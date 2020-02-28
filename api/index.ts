@@ -1,6 +1,6 @@
-const { send, json } = require("micro");
-const fetch = require("node-fetch");
-const config = require("./config");
+import { NowRequest, NowResponse } from "@now/node";
+import fetch from "node-fetch";
+import config from "../config";
 
 const buff = new Buffer(`${config.ACCESS_SECRET}:`);
 const base64data = buff.toString("base64");
@@ -17,10 +17,8 @@ const fetchPersona = async (url, type) => {
   return data;
 };
 
-const handler = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
-  const body = await json(req);
+export default async (req: NowRequest, res: NowResponse) => {
+  const body: any = req;
   const {
     email,
     user_id,
@@ -45,11 +43,13 @@ const handler = async (req, res) => {
   }
 
   // throw error if there is no target
-  if (!target)
-    send(res, 400, {
-      error:
+  if (!target) {
+    res
+      .status(400)
+      .send(
         "Please profile an email, user_id, anonymous_id, or any external id"
-    });
+      );
+  }
 
   profileURL = `${profileURL}/${target}`;
 
@@ -65,7 +65,5 @@ const handler = async (req, res) => {
   }
 
   // send profile
-  send(res, 200, { profile });
+  res.json({ profile });
 };
-
-module.exports = handler;
