@@ -2,10 +2,9 @@ import { NowRequest, NowResponse } from "@now/node";
 import fetch from "node-fetch";
 import config from "../config";
 
-const buff = new Buffer(`${config.ACCESS_SECRET}:`);
-const base64data = buff.toString("base64");
-
 const fetchPersona = async (url, type) => {
+  const buff = new Buffer(`${config.ACCESS_SECRET}:`);
+  const base64data = buff.toString("base64");
   const response = await fetch(`${url}/${type}`, {
     method: "GET",
     headers: {
@@ -18,7 +17,7 @@ const fetchPersona = async (url, type) => {
 };
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const body: any = req;
+  const { body } = req;
   const {
     email,
     user_id,
@@ -57,10 +56,12 @@ export default async (req: NowRequest, res: NowResponse) => {
   let profile = {};
   if (!!traits) {
     const prof = await fetchPersona(profileURL, "traits");
+    if (prof.error) res.status(400).send(prof.error);
     profile = { ...profile, ...prof };
   }
   if (!!events) {
     const prof = await fetchPersona(profileURL, "events");
+    if (prof.error) res.status(400).send(prof.error);
     profile = { ...profile, ...prof };
   }
 
