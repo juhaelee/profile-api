@@ -1,6 +1,9 @@
 import { NowRequest, NowResponse } from "@now/node";
 import fetch from "node-fetch";
+import Cors from "micro-cors";
 import config from "../config";
+
+const cors = Cors();
 
 const fetchPersona = async (url, type) => {
   const buff = new Buffer(`${config.ACCESS_SECRET}:`);
@@ -16,9 +19,17 @@ const fetchPersona = async (url, type) => {
   return data;
 };
 
-export default async (req: NowRequest, res: NowResponse) => {
-  const { body } = req;
-  const {
+const handler = async (req: NowRequest, res: NowResponse) => {
+  // handle options
+  if (req.method === "OPTIONS") {
+    return res.status(200).send("ok!");
+  }
+
+  let { body } = req;
+
+  if (!!body) body = JSON.parse(body);
+
+  let {
     email,
     user_id,
     anonymous_id,
@@ -43,11 +54,10 @@ export default async (req: NowRequest, res: NowResponse) => {
 
   // throw error if there is no target
   if (!target) {
-    res
-      .status(400)
-      .send(
+    res.status(400).send({
+      error:
         "Please profile an email, user_id, anonymous_id, or any external id"
-      );
+    });
   }
 
   profileURL = `${profileURL}/${target}`;
@@ -56,15 +66,17 @@ export default async (req: NowRequest, res: NowResponse) => {
   let profile = {};
   if (!!traits) {
     const prof = await fetchPersona(profileURL, "traits");
-    if (prof.error) res.status(400).send(prof.error);
+    if (prof.error) res.status(400).send({ error: prof.error });
     profile = { ...profile, ...prof };
   }
   if (!!events) {
     const prof = await fetchPersona(profileURL, "events");
-    if (prof.error) res.status(400).send(prof.error);
+    if (prof.error) res.status(400).send({ error: prof.error });
     profile = { ...profile, ...prof };
   }
 
   // send profile
   res.json({ profile });
 };
+
+export default cors(handler);
