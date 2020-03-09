@@ -25,9 +25,7 @@ const handler = async (req: NowRequest, res: NowResponse) => {
     return res.status(200).send("ok!");
   }
 
-  let { body } = req;
-
-  if (!!body) body = JSON.parse(body);
+  let { body = {} } = req;
 
   let {
     email,
