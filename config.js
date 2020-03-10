@@ -1,4 +1,4 @@
 module.exports = {
-  NAMESPACE_ID: "",
-  ACCESS_SECRET: ""
+  NAMESPACE_ID: "UdXjfe8zhv",
+  ACCESS_SECRET: "NyvhJ5c7ZB8ES3D-ghsQtuqWe0VpqDSrDnDlVju0iEr6GZup7Qv2AmkQle9kvt9dX5BVGNmxlKWjopRSDpud3ZVf8DJxukcrPwHMcU9cyUc0m9IcyvRlhyEtv_4UUZWEum9ESJOFlcjTVKX-iVPTKkhyfeB3q68ZC6gOgJS5LWNBtxI6VdGj4VdeLT8Fxdd83hSrLKMY8j8K"
 };
